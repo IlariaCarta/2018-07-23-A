@@ -5,9 +5,11 @@
 package it.polito.tdp.newufosightings;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.newufosightings.model.Model;
+import it.polito.tdp.newufosightings.model.State;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -18,6 +20,7 @@ import javafx.scene.control.TextField;
 public class NewUfoSightingsController {
 
 	private Model model;
+	
 	
 	@FXML // ResourceBundle that was given to the FXMLLoader
 	private ResourceBundle resources;
@@ -51,11 +54,47 @@ public class NewUfoSightingsController {
 
 	@FXML
 	void doCreaGrafo(ActionEvent event) {
-
+		
+		txtResult.clear();
+		String shape = cmbBoxForma.getValue();
+		if(shape == null || shape.equals("") || shape.equals(" "))
+			{
+				txtResult.setText("Selezionare una forma");
+				return;
+			}
+		int anno = Integer.parseInt(txtAnno.getText());
+		model.creaGrafo(anno, shape);
+		
+		Map <State, Integer> mappa;
+		mappa = model.calcolaSommaPesi();
+		
+		for(State s : mappa.keySet()) {
+			txtResult.appendText(s.getName()+" "+mappa.get(s)+"\n");
+		}
+		
+		
 	}
 
 	@FXML
 	void doSelezionaAnno(ActionEvent event) {
+		txtResult.clear();
+		int anno ;
+		
+		try {
+    		anno = Integer.parseInt(txtAnno.getText());
+    		if(anno <1910 ||  anno>2014) {
+    			txtResult.appendText("inserire un anno nell'intervallo (1910-2014)");
+    			return;
+    		}
+    		
+    		
+    		
+    	}catch(NumberFormatException e) {
+    		txtResult.appendText("Inserire un anno valido");
+    		return;
+    	}
+		
+		cmbBoxForma.getItems().addAll(model.getShape(anno));
 
 	}
 
@@ -79,6 +118,7 @@ public class NewUfoSightingsController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		
 
 	}
 }
