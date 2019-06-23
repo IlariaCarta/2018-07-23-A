@@ -14,6 +14,7 @@ public class TestModel {
 		for(State s : mappa.keySet()) {
 			System.out.println(s.getName()+" "+mappa.get(s)+"\n");
 		}
+		model.creaGrafo(1997, "disk");
 		
 		
 	}
